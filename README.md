@@ -7,13 +7,13 @@ A nix flake for [Helium](https://github.com/imputnet/helium-linux), a private, f
 ### Run directly
 
 ```bash
-nix run github:amaanq/helium2nix
+nix run github:amaanq/helium-flake
 ```
 
 ### Install to profile
 
 ```bash
-nix profile install github:amaanq/helium2nix
+nix profile install github:amaanq/helium-flake
 ```
 
 ### Add to NixOS configuration
@@ -23,7 +23,7 @@ nix profile install github:amaanq/helium2nix
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     helium = {
-      url = "github:amaanq/helium2nix";
+      url = "github:amaanq/helium-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     }
   };
