@@ -36,9 +36,9 @@
                 }_linux.tar.xz";
                 sha256 =
                   if system == "aarch64-linux" then
-                    "sha256-B7X+f0cDN4x0H7cTGs2RtT2wpAjdO3Qh35/vPIyOL8k=" # aarch64-linux
+                    "sha256-B7X+f0cDN4x0H7cTGs2RtT2wpAjdO3Qh35/vPIyOL8k="
                   else
-                    "sha256-8YzBMQw4cZUI01zrqI9PPbIA9DC9c6fxO+mygdBGlfs="; # x86_64
+                    "sha256-8YzBMQw4cZUI01zrqI9PPbIA9DC9c6fxO+mygdBGlfs=";
               };
 
               nativeBuildInputs = [
