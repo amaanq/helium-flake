@@ -97,6 +97,8 @@
                 lib.makeLibraryPath [
                   pkgs.libGL
                   pkgs.libva
+                  pkgs.pipewire
+                  pkgs.libpulseaudio
                 ]
               }"
 
