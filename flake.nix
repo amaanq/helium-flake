@@ -16,16 +16,16 @@
       ];
       forAllSystems = lib.genAttrs platforms;
 
-      version = "0.8.2.1";
+      version = "0.8.5.1";
 
       linuxHashes = {
-        "x86_64-linux" = "sha256-hljL7KlafD1TYPmA+U8HRdXKOUdsb6Lnk4XiAYfmPI8=";
-        "aarch64-linux" = "sha256-ymEQnVCAZN9SXIcVLEt6kNkkZ7USY0qBI9M1HsBkrrU=";
+        "x86_64-linux" = "122jqg4bwrw2p8wcv0fzi74wkrz96k5z9z68qrz67hv2bg9pdjpx";
+        "aarch64-linux" = "0990rvqfmq1ja8vg45llbmwkgf9ayhpqlww0qqr9fc14kyarg89s";
       };
 
       darwinHashes = {
-        "x86_64-darwin" = "sha256-uDrsOxCo+FA/K3Ny+ycrjSClQ5gmu50K+9RC+td6yAE=";
-        "aarch64-darwin" = "sha256-Y42Fj+5KPZ2aO7XazV1CFB7liAmWSsafcXpvukJRqoM=";
+        "x86_64-darwin" = "1yyibndrg3jysrrx9cvnivk9jwy1nigv2cf40lkn4s7cza19w2bq";
+        "aarch64-darwin" = "00nk99v15iwjxp91pbbbac97ddyva7d1mp15176zq7hkfi3m3fbs";
       };
 
       mkHeliumLinux =
@@ -92,7 +92,7 @@
             mkdir -p $out/bin $out/opt/helium
             cp -r ./* $out/opt/helium/
 
-            makeWrapper $out/opt/helium/chrome-wrapper $out/bin/helium \
+            makeWrapper $out/opt/helium/helium-wrapper $out/bin/helium \
               --prefix LD_LIBRARY_PATH : "${
                 lib.makeLibraryPath [
                   pkgs.libGL
