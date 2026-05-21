@@ -1,6 +1,7 @@
 # helium-flake
 
-A nix flake for [Helium](https://github.com/imputnet/helium), a private, fast, and honest web browser
+A Nix flake for [Helium](https://github.com/imputnet/helium), a private, fast,
+and honest web browser
 
 ## Usage
 
@@ -22,19 +23,19 @@ nix profile install github:amaanq/helium-flake
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
     helium = {
       url = "github:amaanq/helium-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs: {
-    nixosConfigurations.yourhost = inputs.nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+  outputs = { nixpkgs, helium, ... }: {
+    nixosConfigurations.yourhost = nixpkgs.lib.nixosSystem {
       modules = [
         {
           environment.systemPackages = [
-            inputs.helium.packages.x86_64-linux.default
+            helium.packages.x86_64-linux.default
           ];
         }
       ];
@@ -49,23 +50,24 @@ nix profile install github:amaanq/helium-flake
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    darwin = {
+
+    nix-darwin = {
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     helium = {
       url = "github:amaanq/helium-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs: {
-    darwinConfigurations.yourhost = inputs.darwin.lib.darwinSystem {
-      system = "aarch64-darwin"; # or "x86_64-darwin"
+  outputs = { nix-darwin, helium, ... }: {
+    darwinConfigurations.yourhost = nix-darwin.lib.darwinSystem {
       modules = [
         {
           environment.systemPackages = [
-            inputs.helium.packages.aarch64-darwin.default
+            helium.packages.aarch64-darwin.default # or x86_64-darwin
           ];
         }
       ];
@@ -74,50 +76,18 @@ nix profile install github:amaanq/helium-flake
 }
 ```
 
-### Build locally
-
-```bash
-git clone git@github.com:amaanq/helium-flake.git
-cd helium-flake
-nix build
-./result/bin/helium
-```
-
-## Supported Platforms
-
-- x86_64-linux
-- aarch64-linux
-- x86_64-darwin
-- aarch64-darwin
-
 ## Updating
 
-The Helium version gets automatically updated each Monday
-via a GitHub workflow.
+The version gets automatically updated every 15 minutes via GitHub workflows.
 
-To manually update to the newest Helium release:
+To manually update to the newest release:
 
-1. Run `nix-shell update-helium.nu`
+1. Update versions: `nix run .#update-versions -- ./versions.json`
 
-2. Test the build:
+2. Test the build: `nix flake check`
 
-   ```bash
-   # If you're on Linux
-
-   nix build .#packages.x86_64-linux.helium
-   ./result/bin/helium --version
-
-   nix build .#packages.aarch64-linux.helium
-   ./result/bin/helium --version
-
-   # If you're on macOS
-
-   nix build .#packages.x86_64-darwin.helium
-   ./result/bin/helium --version
-
-   nix build .#packages.aarch64-darwin.helium
-   ./result/bin/helium --version
-   ```
+3. Commit & Push:
+   `git add versions.json && git commit --message "Update versions" && git push`
 
 ## License
 

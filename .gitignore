@@ -1,2 +1,14 @@
-.direnv/
-result
+*
+
+!.gitignore
+!.envrc
+
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
+
+!*.nix
+!flake.lock
+
+!*.md
+!versions.json

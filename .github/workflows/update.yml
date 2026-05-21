@@ -1,0 +1,92 @@
+name: Update
+
+on:
+  schedule:
+    # Run every 15 minutes.
+    - cron: "*/15 * * * *"
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+
+      - name: Update
+        run: nix run .#update-versions -- ./versions.json
+
+      - name: Diff
+        id: diff
+        run: |
+          if git diff --quiet versions.json; then
+            echo "No changes to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload versions.json
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: versions
+          path: versions.json
+
+  check:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+          - macos-latest
+          - macos-15-intel
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download versions.json
+        uses: actions/download-artifact@v4
+        with:
+          name: versions
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+
+      - name: Check
+        run: nix flake check --print-build-logs
+
+  commit:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download versions.json
+        uses: actions/download-artifact@v4
+        with:
+          name: versions
+
+      - name: Commit & Push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add versions.json
+          git commit --message "Update versions"
+          git push

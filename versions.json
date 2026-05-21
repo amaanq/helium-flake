@@ -1,0 +1,26 @@
+{
+  "aarch64-linux": {
+    "version": "0.12.4.1",
+    "url": "https://github.com/imputnet/helium-linux/releases/download/0.12.4.1/helium-0.12.4.1-arm64_linux.tar.xz",
+    "hash": "sha256-p4aPqMcPA04e5rh9a5WB2FyD1bwfVBR2O2YibkSIIo4=",
+    "etag": "\"0x8DEB6AD9799C84A\""
+  },
+  "x86_64-linux": {
+    "version": "0.12.4.1",
+    "url": "https://github.com/imputnet/helium-linux/releases/download/0.12.4.1/helium-0.12.4.1-x86_64_linux.tar.xz",
+    "hash": "sha256-cBqVVImuvEqUeK7QgM5+FB1q4w/cnCcwT8DXPweV4Lg=",
+    "etag": "\"0x8DEB6AD9733D7FA\""
+  },
+  "x86_64-darwin": {
+    "version": "0.12.3.1",
+    "url": "https://github.com/imputnet/helium-macos/releases/download/0.12.3.1/helium_0.12.3.1_x86_64-macos.dmg",
+    "hash": "sha256-8L0svl4gmUIbVF6C5TGpyivNXPsVIGyKPEydHf+GY0E=",
+    "etag": "\"0x8DEB1F5E9019617\""
+  },
+  "aarch64-darwin": {
+    "version": "0.12.3.1",
+    "url": "https://github.com/imputnet/helium-macos/releases/download/0.12.3.1/helium_0.12.3.1_arm64-macos.dmg",
+    "hash": "sha256-BrbexBlCQh9htQEy4Wiul/oNSn2MVERoqpLT8VRLENM=",
+    "etag": "\"0x8DEB1F5E851F76D\""
+  }
+}
