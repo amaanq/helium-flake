@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: update
@@ -83,10 +84,18 @@ jobs:
         with:
           name: versions
 
-      - name: Commit & Push
+      - name: Commit, PR, Merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+
+          git switch --create "update-versions-${{ github.run_id }}"
           git add versions.json
           git commit --message "Update versions"
-          git push
+          git push origin HEAD
+
+          { echo '```diff'; git diff HEAD^ -- versions.json; echo '```'; } \
+          | gh pr create --title "Update versions" --body-file -
+          gh pr merge --rebase --delete-branch || { gh pr close --delete-branch; exit 1; }
