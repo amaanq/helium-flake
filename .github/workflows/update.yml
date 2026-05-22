@@ -91,7 +91,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git switch --create "update-versions-${{ github.run_id }}"
+          git switch --create "update-versions-${{ github.run_id }}-${{ github.run_attempt }}"
           git add versions.json
           git commit --message "Update versions"
           git push origin HEAD
