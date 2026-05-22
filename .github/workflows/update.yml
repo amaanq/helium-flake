@@ -33,9 +33,10 @@ jobs:
         id: diff
         run: |
           if git diff --quiet versions.json; then
-            echo "No changes to commit."
+            echo "Nothing ever happens."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
+            echo "SOMETHING HAPPENED"
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
