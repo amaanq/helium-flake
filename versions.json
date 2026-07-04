@@ -1,26 +1,26 @@
 {
   "aarch64-linux": {
-    "version": "0.14.2.1",
-    "url": "https://github.com/imputnet/helium-linux/releases/download/0.14.2.1/helium-0.14.2.1-arm64_linux.tar.xz",
-    "hash": "sha256-sQBqHBl4N6zK/M31OuVqiz+VNVtPxCJGmUKFSsJRkck=",
-    "etag": "\"0x8DED755FCDE2D47\""
+    "version": "0.14.3.1",
+    "url": "https://github.com/imputnet/helium-linux/releases/download/0.14.3.1/helium-0.14.3.1-arm64_linux.tar.xz",
+    "hash": "sha256-j6JIcEvp7ER1owb/7UB613fWALJAIcAF992bLnB+NEg=",
+    "etag": "\"0x8DED94C956F385C\""
   },
   "x86_64-linux": {
-    "version": "0.14.2.1",
-    "url": "https://github.com/imputnet/helium-linux/releases/download/0.14.2.1/helium-0.14.2.1-x86_64_linux.tar.xz",
-    "hash": "sha256-Tx7XpzyLxd+KyIPuzMelkBnyiaLPau59nmvjH4C/ubA=",
-    "etag": "\"0x8DED755FDD97891\""
+    "version": "0.14.3.1",
+    "url": "https://github.com/imputnet/helium-linux/releases/download/0.14.3.1/helium-0.14.3.1-x86_64_linux.tar.xz",
+    "hash": "sha256-mEBKk4+W9Miyu7kr7QQi/WDH4Vkexr1pxNxei2chJ5M=",
+    "etag": "\"0x8DED94C95977AB1\""
   },
   "x86_64-darwin": {
-    "version": "0.14.2.1",
-    "url": "https://github.com/imputnet/helium-macos/releases/download/0.14.2.1/helium_0.14.2.1_x86_64-macos.dmg",
-    "hash": "sha256-EFNvF6FtxJZoQyWeMESsVc4XkUx6I0u3CXKMiCNEGds=",
-    "etag": "\"0x8DED7A781A5B7D7\""
+    "version": "0.14.3.1",
+    "url": "https://github.com/imputnet/helium-macos/releases/download/0.14.3.1/helium_0.14.3.1_x86_64-macos.dmg",
+    "hash": "sha256-KZZTh4ajlx2TI2KSDAJj+HAraIvRi+aznDNeXEY2AVI=",
+    "etag": "\"0x8DED97260720A6A\""
   },
   "aarch64-darwin": {
-    "version": "0.14.2.1",
-    "url": "https://github.com/imputnet/helium-macos/releases/download/0.14.2.1/helium_0.14.2.1_arm64-macos.dmg",
-    "hash": "sha256-26DpPfhMljSltSasfbdhLKKrc7LX0G2xEqcLL08Kd9w=",
-    "etag": "\"0x8DED7A781BB983E\""
+    "version": "0.14.3.1",
+    "url": "https://github.com/imputnet/helium-macos/releases/download/0.14.3.1/helium_0.14.3.1_arm64-macos.dmg",
+    "hash": "sha256-Lf95koI966ykq/ufvgq8VVvsyo4nDVgY64JlPyXFGww=",
+    "etag": "\"0x8DED972600C67E0\""
   }
 }
