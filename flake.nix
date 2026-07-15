@@ -12,10 +12,8 @@
         genAttrs
         recursiveUpdate
         ;
-      inherit (lib.licenses) gpl3Only;
-      inherit (lib.lists) foldl' optionals;
+      inherit (lib.lists) foldl';
       inherit (lib.meta) getExe;
-      inherit (lib.strings) makeLibraryPath optionalString;
       inherit (lib.systems) flakeExposed;
       inherit (lib.trivial) importJSON pathExists;
 
@@ -24,150 +22,6 @@
       forAllSystems = f: genAttrs flakeExposed (system: f (import nixpkgs { inherit system; }));
       forSupportedSystems =
         f: genAttrs (attrNames perSystem) (system: f (import nixpkgs { inherit system; }));
-
-      package =
-        {
-          stdenv,
-          fetchurl,
-          makeWrapper,
-          makeBinaryWrapper,
-          autoPatchelfHook,
-          qt6,
-          glib,
-          gdk-pixbuf,
-          gtk3,
-          nspr,
-          nss,
-          dbus,
-          atk,
-          at-spi2-atk,
-          cups,
-          expat,
-          libxcb,
-          libxkbcommon,
-          at-spi2-core,
-          libx11,
-          libxcomposite,
-          libxdamage,
-          libxext,
-          libxfixes,
-          libxrandr,
-          mesa,
-          cairo,
-          pango,
-          systemd,
-          alsa-lib,
-          libdrm,
-          libGL,
-          libva,
-          pipewire,
-          libpulseaudio,
-        }:
-        stdenv.mkDerivation {
-          pname = "helium";
-          inherit (perSystem.${stdenv.hostPlatform.system}) version;
-
-          src = fetchurl {
-            inherit (perSystem.${stdenv.hostPlatform.system}) url hash;
-          };
-
-          nativeBuildInputs =
-            optionals stdenv.isDarwin [ makeBinaryWrapper ]
-            ++ optionals stdenv.isLinux [
-              makeWrapper
-              autoPatchelfHook
-              qt6.wrapQtAppsHook
-            ];
-
-          buildInputs = optionals stdenv.isLinux [
-            glib
-            gdk-pixbuf
-            gtk3
-            nspr
-            nss
-            dbus
-            atk
-            at-spi2-atk
-            cups
-            expat
-            libxcb
-            libxkbcommon
-            at-spi2-core
-            libx11
-            libxcomposite
-            libxdamage
-            libxext
-            libxfixes
-            libxrandr
-            mesa
-            cairo
-            pango
-            systemd
-            alsa-lib
-            libdrm
-            qt6.qtbase
-          ];
-
-          # Ignore Qt5 shim, qt5webengine is unmaintained & we're using Qt6
-          autoPatchelfIgnoreMissingDeps = optionals stdenv.isLinux [
-            "libQt5Core.so.5"
-            "libQt5Gui.so.5"
-            "libQt5Widgets.so.5"
-          ];
-
-          unpackCmd = optionalString stdenv.isDarwin /* sh */ ''
-            mnt=$(TMPDIR=/tmp mktemp -d -t nix-XXXXXXXXXX)
-            trap "/usr/bin/hdiutil detach $mnt -force; rm -rf $mnt" EXIT
-            /usr/bin/hdiutil attach -nobrowse -readonly -mountpoint $mnt $curSrc
-            cp --archive $mnt/Helium.app $PWD/
-          '';
-
-          sourceRoot = optionalString stdenv.isDarwin ".";
-
-          installPhase = ''
-            runHook preInstall
-
-            ${optionalString stdenv.isDarwin /* sh */ ''
-              mkdir --parents $out/Applications
-              cp --archive Helium.app $out/Applications/Helium.app
-
-              mkdir --parents $out/bin
-              makeBinaryWrapper $out/Applications/Helium.app/Contents/MacOS/Helium $out/bin/helium
-            ''}
-
-            ${optionalString stdenv.isLinux /* sh */ ''
-              mkdir --parents $out/opt/helium
-              cp --recursive ./* $out/opt/helium/
-
-              mkdir --parents $out/bin
-              makeWrapper $out/opt/helium/helium-wrapper $out/bin/helium \
-                --prefix LD_LIBRARY_PATH : "${
-                  makeLibraryPath [
-                    libGL
-                    libva
-                    pipewire
-                    libpulseaudio
-                  ]
-                }"
-
-              mkdir --parents $out/share/applications
-              cp $out/opt/helium/helium.desktop $out/share/applications/
-
-              mkdir --parents $out/share/pixmaps
-              cp $out/opt/helium/product_logo_256.png $out/share/pixmaps/helium.png
-            ''}
-
-            runHook postInstall
-          '';
-
-          meta = {
-            platforms = attrNames perSystem;
-            description = "A private, fast, and honest web browser";
-            homepage = "https://github.com/imputnet/helium";
-            license = gpl3Only;
-            mainProgram = "helium";
-          };
-        };
     in
     {
       checks = forSupportedSystems (pkgs: {
@@ -178,7 +32,7 @@
 
       packages = foldl' recursiveUpdate { } [
         (forSupportedSystems (pkgs: {
-          helium = pkgs.callPackage package { };
+          helium = pkgs.callPackage ./package.nix { inherit perSystem; };
           default = self.packages.${pkgs.stdenv.hostPlatform.system}.helium;
         }))
 
