@@ -35,6 +35,7 @@
   libva,
   pipewire,
   libpulseaudio,
+  commandLineArgs ? "",
   perSystem ?
     if lib.trivial.pathExists ./versions.json then lib.trivial.importJSON ./versions.json else { },
 }:
@@ -135,6 +136,8 @@ stdenv.mkDerivation {
             libpulseaudio
           ]
         }"
+        --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
+        --add-flags ${lib.escapeShellArg commandLineArgs}
 
       mkdir --parents $out/share/applications
       cp $out/opt/helium/helium.desktop $out/share/applications/
