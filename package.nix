@@ -36,7 +36,7 @@
   pipewire,
   libpulseaudio,
   widevine-cdm,
-  withWidevine ? true,
+  withWidevine ? false,
   perSystem ?
     if lib.trivial.pathExists ./versions.json then lib.trivial.importJSON ./versions.json else { },
 }:
