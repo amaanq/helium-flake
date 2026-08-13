@@ -91,7 +91,7 @@
                 let old = $olds | get --optional $new.system
 
                 let new_etag = http head $new.url
-                  | where { ($in.name | str downcase) == "etag" }
+                  | where { ($in.name) == "etag" }
                   | get --optional 0.value
                 let old_etag = $old.etag?
 
