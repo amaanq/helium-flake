@@ -36,6 +36,8 @@
   pipewire,
   libpulseaudio,
   commandLineArgs ? "",
+  widevine-cdm,
+  withWidevine ? false,
   perSystem ?
     if lib.trivial.pathExists ./versions.json then lib.trivial.importJSON ./versions.json else { },
 }:
@@ -144,6 +146,10 @@ stdenv.mkDerivation {
 
       mkdir --parents $out/share/pixmaps
       cp $out/opt/helium/product_logo_256.png $out/share/pixmaps/helium.png
+    ''}
+
+    ${optionalString (withWidevine && isLinux) ''
+      ln -s ${widevine-cdm}/share/google/chrome/WidevineCdm $out/opt/helium/WidevineCdm
     ''}
 
     runHook postInstall

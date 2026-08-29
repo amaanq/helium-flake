@@ -14,6 +14,7 @@
         ;
       inherit (lib.lists) foldl';
       inherit (lib.meta) getExe;
+      inherit (lib.strings) getName;
       inherit (lib.systems) flakeExposed;
       inherit (lib.trivial) importJSON pathExists;
 
@@ -21,7 +22,16 @@
 
       forAllSystems = f: genAttrs flakeExposed (system: f (import nixpkgs { inherit system; }));
       forSupportedSystems =
-        f: genAttrs (attrNames perSystem) (system: f (import nixpkgs { inherit system; }));
+        f:
+        genAttrs (attrNames perSystem) (
+          system:
+          f (
+            import nixpkgs {
+              inherit system;
+              config.allowUnfreePredicate = pkg: getName pkg == "widevine-cdm";
+            }
+          )
+        );
     in
     {
       checks = forSupportedSystems (pkgs: {
@@ -33,6 +43,10 @@
       packages = foldl' recursiveUpdate { } [
         (forSupportedSystems (pkgs: {
           helium = pkgs.callPackage ./package.nix { inherit perSystem; };
+          helium-widevine = pkgs.callPackage ./package.nix {
+            inherit perSystem;
+            withWidevine = true;
+          };
           default = self.packages.${pkgs.stdenv.hostPlatform.system}.helium;
         }))
 
