@@ -1,15 +1,15 @@
 {
   "aarch64-linux": {
-    "version": "0.16.2.1",
-    "url": "https://github.com/imputnet/helium-linux/releases/download/0.16.2.1/helium-0.16.2.1-arm64_linux.tar.xz",
-    "hash": "sha256-7l33oPwHvlGrokwNq57T57eUcZkTevjZ0mqfWPfTjfc=",
-    "etag": "\"0x8DF054B088EAA3E\""
+    "version": "0.16.3.1",
+    "url": "https://github.com/imputnet/helium-linux/releases/download/0.16.3.1/helium-0.16.3.1-arm64_linux.tar.xz",
+    "hash": "sha256-IWL37CsqOiAlrJdWx7DXlxq/BPyFzzQ/11yfVvbmDKM=",
+    "etag": "\"0x8DF07B7205B40CD\""
   },
   "x86_64-linux": {
-    "version": "0.16.2.1",
-    "url": "https://github.com/imputnet/helium-linux/releases/download/0.16.2.1/helium-0.16.2.1-x86_64_linux.tar.xz",
-    "hash": "sha256-gAg4BpJyhwpvT8nq3wF8CBn32Jq/YHEXCAsHnUv3wBc=",
-    "etag": "\"0x8DF054B08B4A538\""
+    "version": "0.16.3.1",
+    "url": "https://github.com/imputnet/helium-linux/releases/download/0.16.3.1/helium-0.16.3.1-x86_64_linux.tar.xz",
+    "hash": "sha256-Y07fuk0C6rUEjz6PHGRMJDfBL7TM2xlggXKtG4lWy+s=",
+    "etag": "\"0x8DF07B7207EA697\""
   },
   "x86_64-darwin": {
     "version": "0.16.2.1",
