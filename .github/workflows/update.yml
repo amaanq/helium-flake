@@ -96,13 +96,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-
-          git switch --create "update-versions-${{ github.run_id }}-${{ github.run_attempt }}"
           git add versions.json flake.lock
           title="Update $(git diff --cached --name-only | paste -sd, - | sed 's/,/, /g')"
           git commit --message "$title"
           git push origin HEAD
-
-          { echo '```diff'; git diff HEAD^ -- versions.json flake.lock; echo '```'; } \
-          | gh pr create --title "$title" --body-file -
-          gh pr merge --rebase --delete-branch || { gh pr close --delete-branch; exit 1; }
