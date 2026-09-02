@@ -4,6 +4,8 @@ on:
   schedule:
     # Run every day.
     - cron: "0 0 * * *"
+    # Also update flake.lock weekly.
+    - cron: "27 4 * * 1"
   workflow_dispatch: # Allow manual triggering
 
 permissions:
@@ -26,13 +28,17 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v31
 
+      - name: Update flake.lock
+        if: github.event.schedule == '27 4 * * 1' || github.event_name == 'workflow_dispatch'
+        run: nix flake update
+
       - name: Update
         run: nix run .#update-versions -- ./versions.json
 
       - name: Diff
         id: diff
         run: |
-          if git diff --quiet versions.json; then
+          if git diff --quiet versions.json flake.lock; then
             echo "Nothing ever happens."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -45,7 +51,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: versions
-          path: versions.json
+          path: |
+            versions.json
+            flake.lock
 
   check:
     needs: update
@@ -56,7 +64,6 @@ jobs:
           - ubuntu-latest
           - ubuntu-24.04-arm
           - macos-latest
-          - macos-15-intel
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -88,8 +95,14 @@ jobs:
       - name: Commit, PR, Merge
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]" 
-          git add versions.json
-          git commit --message "Update versions"
+          git config --local user.name "github-actions[bot]"
+
+          git switch --create "update-versions-${{ github.run_id }}-${{ github.run_attempt }}"
+          git add versions.json flake.lock
+          title="Update $(git diff --cached --name-only | paste -sd, - | sed 's/,/, /g')"
+          git commit --message "$title"
           git push origin HEAD
 
+          { echo '```diff'; git diff HEAD^ -- versions.json flake.lock; echo '```'; } \
+          | gh pr create --title "$title" --body-file -
+          gh pr merge --rebase --delete-branch || { gh pr close --delete-branch; exit 1; }
