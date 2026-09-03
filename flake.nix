@@ -47,6 +47,15 @@
             inherit perSystem;
             withWidevine = true;
           };
+          helium-beta = pkgs.callPackage ./package.nix {
+            inherit perSystem;
+            betaRelease = true;
+          };
+          helium-widevine-beta = pkgs.callPackage ./package.nix {
+            inherit perSystem;
+            betaRelease = true;
+            withWidevine = true;
+          };
           default = self.packages.${pkgs.stdenv.hostPlatform.system}.helium;
         }))
 
@@ -61,26 +70,23 @@
               $"($arch)-($os)"
             }
 
-            def fetch-release [repository: string]: nothing -> list {
-              let release = try { http get $"https://api.github.com/repos/($repository)/releases/latest" } catch { |err|
+            def fetch-release [repository: string, beta: bool]: nothing -> list {
+              let release = try { http get $"https://api.github.com/repos/($repository)/releases(if not $beta { "/latest" } )" } catch { |err|
                 print --stderr $"($repository): /releases/latest failed"
                 print --stderr $err.rendered
                 exit 1
               }
 
-              $release.assets
+              if $beta { $release | first } else { $release } | get assets |
               | each {|asset| {
                 name: $asset.name,
-                version: $release.tag_name,
+                version: (if $beta { $release.tag_name | first } else { $release.tag_name } ),
                 url: $asset.browser_download_url
               } }
             }
 
-            def main [path: path] {
-              let olds = try { open --raw $path | from json } catch { {} }
-
-              ((fetch-release "imputnet/helium-linux") ++ (fetch-release "imputnet/helium-macos")
-
+            def updated_versions [olds: any, new: any]: nothing -> record {
+                ( $new
               # Filter-map the name field into a system field.
               | insert system {|asset| try { asset-to-system $asset.name } } | where system != null | reject name
 
@@ -89,7 +95,7 @@
                 let old = $olds | get --optional $new.system
 
                 let new_etag = http head $new.url
-                  | where { ($in.name | str downcase) == "etag" }
+                  | where { ($in.name | str lowercase) == "etag" }
                   | get --optional 0.value
                 let old_etag = $old.etag?
 
@@ -107,10 +113,20 @@
 
               # Turn into a record keyed by the system.
               | each {|item| { ($item.system): ($item | reject system) } } | into record
+              )
+            }
 
-              # Merge it into existing old.
-              | collect {|news| $olds | merge $news }
+            def main [path: path] {
+                let old = try { open --raw $path | from json } catch { {} }
+                let old_betas = try { $old | items {|system, value| {($system): $value.beta} } | into record } catch { {} }
 
+                let betas = updated_versions $old_betas (
+                  (fetch-release "imputnet/helium-linux" true) ++ (fetch-release "imputnet/helium-macos" true)
+                ) | items {|system, value| {$system: {beta: $value}}  } | into record
+
+                ( updated_versions $old (
+                      (fetch-release "imputnet/helium-linux" false) ++ (fetch-release "imputnet/helium-macos" false)
+                  ) | items {|system, value| {($system): ($value | merge ($betas | get $system))} } | into record
               # Save.
               | to json | save --force $path)
             }
