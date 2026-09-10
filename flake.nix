@@ -38,6 +38,9 @@
         print-version = pkgs.runCommand "print-version" { } ''
           ${getExe self.packages.${pkgs.stdenv.hostPlatform.system}.helium} --version | tee $out
         '';
+        print-beta-version = pkgs.runCommand "print-beta-version" { } ''
+          ${getExe self.packages.${pkgs.stdenv.hostPlatform.system}.helium-beta} --version | tee $out
+        '';
       });
 
       packages = foldl' recursiveUpdate { } [
