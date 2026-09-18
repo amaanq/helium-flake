@@ -39,6 +39,7 @@
   withWidevine ? false,
   perSystem ?
     if lib.trivial.pathExists ./versions.json then lib.trivial.importJSON ./versions.json else { },
+  betaRelease ? false,
 }:
 let
   inherit (stdenv.hostPlatform) system isDarwin isLinux;
@@ -47,12 +48,13 @@ let
   inherit (lib.strings) optionalString makeLibraryPath;
 
   currentSystem = getAttr system perSystem;
+  currentVersion = if betaRelease then currentSystem.beta else currentSystem;
 in
 stdenv.mkDerivation {
   pname = "helium";
-  inherit (currentSystem) version;
+  inherit (currentVersion) version;
 
-  src = fetchurl { inherit (currentSystem) url hash; };
+  src = fetchurl { inherit (currentVersion) url hash; };
 
   nativeBuildInputs =
     if isDarwin then
