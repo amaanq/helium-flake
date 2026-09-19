@@ -35,6 +35,7 @@
   libva,
   pipewire,
   libpulseaudio,
+  commandLineArgs ? "",
   widevine-cdm,
   withWidevine ? false,
   perSystem ?
@@ -136,7 +137,9 @@ stdenv.mkDerivation {
             pipewire
             libpulseaudio
           ]
-        }"
+        }" \
+        --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
+        --add-flags ${lib.escapeShellArg commandLineArgs}
 
       mkdir --parents $out/share/applications
       cp $out/opt/helium/helium.desktop $out/share/applications/
