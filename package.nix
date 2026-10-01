@@ -35,6 +35,7 @@
   libva,
   pipewire,
   libpulseaudio,
+  commandLineArgs ? "",
   widevine-cdm,
   withWidevine ? false,
   perSystem ?
@@ -120,7 +121,8 @@ stdenv.mkDerivation {
       cp --archive Helium.app $out/Applications/Helium.app
 
       mkdir --parents $out/bin
-      makeBinaryWrapper $out/Applications/Helium.app/Contents/MacOS/Helium $out/bin/helium
+      makeBinaryWrapper $out/Applications/Helium.app/Contents/MacOS/Helium $out/bin/helium \
+        --add-flags ${lib.escapeShellArg commandLineArgs}
     ''}
 
     ${optionalString isLinux /* sh */ ''
@@ -136,7 +138,9 @@ stdenv.mkDerivation {
             pipewire
             libpulseaudio
           ]
-        }"
+        }" \
+        --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
+        --add-flags ${lib.escapeShellArg commandLineArgs}
 
       mkdir --parents $out/share/applications
       cp $out/opt/helium/helium.desktop $out/share/applications/
