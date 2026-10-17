@@ -12,15 +12,15 @@
     "etag": "\"0x8DF2B9FC5C77789\""
   },
   "x86_64-darwin": {
-    "version": "0.19.3.1",
-    "url": "https://github.com/imputnet/helium-macos/releases/download/0.19.3.1/helium_0.19.3.1_x86_64-macos.dmg",
-    "hash": "sha256-BQhen6QgZdNusoEPzyjq/iI7anVZku4+iUflFH/q1r4=",
-    "etag": "\"0x8DF2AAE55EF5AF8\""
+    "version": "0.19.4.1",
+    "url": "https://github.com/imputnet/helium-macos/releases/download/0.19.4.1/helium_0.19.4.1_x86_64-macos.dmg",
+    "hash": "sha256-ekmZ6zfoeSBZpLiqJv/8eWLIiy8xo07i4x/24hEm510=",
+    "etag": "\"0x8DF2C12E65C48C1\""
   },
   "aarch64-darwin": {
-    "version": "0.19.3.1",
-    "url": "https://github.com/imputnet/helium-macos/releases/download/0.19.3.1/helium_0.19.3.1_arm64-macos.dmg",
-    "hash": "sha256-ugwwxIPubEbkj/wjmuaysIR6/etU60puoxZlBUpS0Vk=",
-    "etag": "\"0x8DF2AAE556C7430\""
+    "version": "0.19.4.1",
+    "url": "https://github.com/imputnet/helium-macos/releases/download/0.19.4.1/helium_0.19.4.1_arm64-macos.dmg",
+    "hash": "sha256-Ew5DEAjyXe2dUiEL36hmsKzlnQTNqv8Hx3kx+9f5MyE=",
+    "etag": "\"0x8DF2C12E6246098\""
   }
 }
