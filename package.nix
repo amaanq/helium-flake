@@ -97,6 +97,9 @@ stdenv.mkDerivation {
 
   dontWrapQtApps = true;
 
+  # Fixup breaks the code signature
+  dontFixup = isDarwin;
+
   # Ignore Qt5 shim, qt5webengine is unmaintained & we're using Qt6
   autoPatchelfIgnoreMissingDeps = optionals isLinux [
     "libQt5Core.so.5"
