@@ -35,6 +35,8 @@
   libva,
   pipewire,
   libpulseaudio,
+  wrapGAppsHook3,
+  makeShellWrapper,
   commandLineArgs ? "",
   widevine-cdm,
   withWidevine ? false,
@@ -62,6 +64,8 @@ stdenv.mkDerivation {
       [
         makeWrapper
         autoPatchelfHook
+        # The binary wrapper wouldn't expand $NIXOS_OZONE_WL at launch
+        (wrapGAppsHook3.override { makeWrapper = makeShellWrapper; })
       ]
     else
       [ ];
@@ -96,6 +100,7 @@ stdenv.mkDerivation {
   ];
 
   dontWrapQtApps = true;
+  dontWrapGApps = true;
 
   # Fixup breaks the code signature
   dontFixup = isDarwin;
@@ -133,17 +138,6 @@ stdenv.mkDerivation {
       cp --recursive ./* $out/opt/helium/
 
       mkdir --parents $out/bin
-      makeWrapper $out/opt/helium/helium-wrapper $out/bin/helium \
-        --prefix LD_LIBRARY_PATH : "${
-          makeLibraryPath [
-            libGL
-            libva
-            pipewire
-            libpulseaudio
-          ]
-        }" \
-        --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
-        --add-flags ${lib.escapeShellArg commandLineArgs}
 
       mkdir --parents $out/share/applications
       cp $out/opt/helium/helium.desktop $out/share/applications/
@@ -157,6 +151,24 @@ stdenv.mkDerivation {
     ''}
 
     runHook postInstall
+  '';
+
+  preFixup = optionalString isLinux /* sh */ ''
+    gappsWrapperArgs+=(
+      --prefix LD_LIBRARY_PATH : "${
+        makeLibraryPath [
+          libGL
+          libva
+          pipewire
+          libpulseaudio
+          gtk3
+        ]
+      }"
+      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}"
+      --add-flags ${lib.escapeShellArg commandLineArgs}
+    )
+
+    makeWrapper $out/opt/helium/helium-wrapper $out/bin/helium "''${gappsWrapperArgs[@]}"
   '';
 
   meta = {
