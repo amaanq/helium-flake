@@ -102,8 +102,8 @@ stdenv.mkDerivation {
   dontWrapQtApps = true;
   dontWrapGApps = true;
 
-  # Fixup breaks the code signature
-  dontFixup = isDarwin;
+  # Stripping breaks the code signature, breaking GPU acceleration etc.
+  dontStrip = isDarwin;
 
   # Ignore Qt5 shim, qt5webengine is unmaintained & we're using Qt6
   autoPatchelfIgnoreMissingDeps = optionals isLinux [
