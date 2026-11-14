@@ -102,8 +102,9 @@ stdenv.mkDerivation {
   dontWrapQtApps = true;
   dontWrapGApps = true;
 
-  # Stripping breaks the code signature, breaking GPU acceleration etc.
+  # Preserve upstream signature.
   dontStrip = isDarwin;
+  dontPatchShebangs = isDarwin;
 
   # Ignore Qt5 shim, qt5webengine is unmaintained & we're using Qt6
   autoPatchelfIgnoreMissingDeps = optionals isLinux [
@@ -169,6 +170,10 @@ stdenv.mkDerivation {
     )
 
     makeWrapper $out/opt/helium/helium-wrapper $out/bin/helium "''${gappsWrapperArgs[@]}"
+  '';
+
+  postFixup = optionalString isDarwin /* sh */ ''
+    /usr/bin/codesign --verify --deep --strict "$out/Applications/Helium.app"
   '';
 
   meta = {
